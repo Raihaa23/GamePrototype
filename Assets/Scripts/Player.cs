@@ -6,7 +6,11 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public new Rigidbody2D rigidbody;
-    public Shooting bulletPrefab;
+    public Shooting bulletPrefab1;
+    public Shooting bulletPrefab2;
+    public Shooting bulletPrefab3;
+
+    private bool isBullet1selected, isBullet2selected, isBullet3selected;
 
     public float thrustSpeed = 1.0f;
     public bool thrusting;
@@ -20,6 +24,7 @@ public class Player : MonoBehaviour
         PlayerWidth = transform.localScale.x / -2;
         PlayerHeight = transform.localScale.y / -2;
         screensize = new Vector2(Camera.main.aspect * Camera.main.orthographicSize + PlayerWidth, Camera.main.orthographicSize + PlayerHeight);
+        
     }
 
     private void Awake()
@@ -67,8 +72,37 @@ public class Player : MonoBehaviour
 
     private void Shoot()
     {
-        Shooting bullet = Instantiate(this.bulletPrefab, this.transform.position, this.transform.rotation);
-        bullet.Project(this.transform.up);
+        if (isBullet1selected)
+        {
+            Shooting bullet = Instantiate(this.bulletPrefab1, this.transform.position, this.transform.rotation);
+            bullet.Project(this.transform.up);
+        }
+        else if (isBullet2selected)
+        {
+            Shooting bullet = Instantiate(this.bulletPrefab2, this.transform.position, this.transform.rotation);
+            bullet.Project(this.transform.up);
+        }
+        else if (isBullet3selected)
+        {
+            Shooting bullet = Instantiate(this.bulletPrefab3, this.transform.position, this.transform.rotation);
+            bullet.Project(this.transform.up);
+        }
+    }
+
+    public void SelectBullet1()
+    {
+        isBullet1selected = true;
+        Debug.Log("Testing");
+    }
+
+    public void SelectBullet2()
+    {
+        isBullet2selected = true;
+    }
+
+    public void SelectBullet3()
+    {
+        isBullet3selected = true;
     }
 
     private void TurnOnCollisions()
