@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 public class Player : MonoBehaviour
@@ -10,45 +11,52 @@ public class Player : MonoBehaviour
     public Shooting bulletPrefab2;
     public Shooting bulletPrefab3;
 
-    private bool isBullet1selected, isBullet2selected, isBullet3selected;
+    private bool _isBullet1Selected, _isBullet2Selected, _isBullet3Selected;
 
     public float thrustSpeed = 1.0f;
     public bool thrusting;
-    public Vector2 screensize;
-    public float PlayerWidth, PlayerHeight;
-    public float turnDirection = 0.0f;
+    public Vector2 screenSize;
+    public float playerWidth;
+    public float playerHeight;
+    public float turnDirection;
     public float rotationSpeed = 0.1f;
 
     private void Start()
     {
-        PlayerWidth = transform.localScale.x / -2;
-        PlayerHeight = transform.localScale.y / -2;
-        screensize = new Vector2(Camera.main.aspect * Camera.main.orthographicSize + PlayerWidth, Camera.main.orthographicSize + PlayerHeight);
-        
+        var localScale = transform.localScale;
+        playerWidth = localScale.x / -2;
+        playerHeight = localScale.y / -2;
+        if (Camera.main != null)
+        {
+            var main = Camera.main;
+            float orthographicSize;
+            screenSize = new Vector2(main.aspect * (orthographicSize = main.orthographicSize) + playerWidth,
+                orthographicSize + playerHeight);
+        }
     }
 
     private void Awake()
     {
-        this.rigidbody = GetComponent<Rigidbody2D>();
+        rigidbody = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
         Border();
 
-        this.thrusting = Input.GetKey(KeyCode.W);
+        thrusting = Input.GetKey(KeyCode.W);
 
         if (Input.GetKey(KeyCode.A))
         {
-            this.turnDirection = 1.0f;
+            turnDirection = 1.0f;
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            this.turnDirection = -1.0f;
+            turnDirection = -1.0f;
         }
         else
         {
-            this.turnDirection = 0.0f;
+            turnDirection = 0.0f;
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -59,85 +67,93 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (this.thrusting)
+        if (thrusting)
         {
-            this.rigidbody.AddForce(this.transform.up * this.thrustSpeed);
+            rigidbody.AddForce(transform.up * thrustSpeed);
         }
 
-        if (this.turnDirection != 0.0f)
+        if (turnDirection != 0.0f)
         {
-            this.rigidbody.AddTorque(this.rotationSpeed * this.turnDirection);
+            rigidbody.AddTorque(rotationSpeed * turnDirection);
         }
     }
 
     private void Shoot()
     {
-        if (isBullet1selected)
+        if (_isBullet1Selected)
         {
-            Shooting bullet = Instantiate(this.bulletPrefab1, this.transform.position, this.transform.rotation);
-            bullet.Project(this.transform.up);
+            var transform1 = transform;
+            Shooting bullet = Instantiate(bulletPrefab1, transform1.position, transform1.rotation);
+            bullet.Project(transform.up);
         }
-        else if (isBullet2selected)
+        else if (_isBullet2Selected)
         {
-            Shooting bullet = Instantiate(this.bulletPrefab2, this.transform.position, this.transform.rotation);
-            bullet.Project(this.transform.up);
+            var transform1 = transform;
+            Shooting bullet = Instantiate(bulletPrefab2, transform1.position, transform1.rotation);
+            bullet.Project(transform.up);
         }
-        else if (isBullet3selected)
+        else if (_isBullet3Selected)
         {
-            Shooting bullet = Instantiate(this.bulletPrefab3, this.transform.position, this.transform.rotation);
-            bullet.Project(this.transform.up);
+            var transform1 = transform;
+            Shooting bullet = Instantiate(bulletPrefab3, transform1.position, transform1.rotation);
+            bullet.Project(transform.up);
         }
     }
 
     public void SelectBullet1()
     {
-        isBullet1selected = true;
-        Debug.Log("Testing");
+        _isBullet1Selected = true;
     }
 
     public void SelectBullet2()
     {
-        isBullet2selected = true;
+        _isBullet2Selected = true;
     }
 
     public void SelectBullet3()
     {
-        isBullet3selected = true;
+        _isBullet3Selected = true;
     }
 
+/*
     private void TurnOnCollisions()
     {
-        this.gameObject.layer = LayerMask.NameToLayer("Player");
+        gameObject.layer = LayerMask.NameToLayer("Player");
     }
+*/
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Asteroid")
+        if (collision.gameObject.CompareTag("Asteroid"))
         {
-            this.rigidbody.velocity = Vector3.zero;
-            this.rigidbody.angularVelocity = 0.0f;
+            rigidbody.velocity = Vector3.zero;
+            rigidbody.angularVelocity = 0.0f;
             Destroy(gameObject);
         }
     }
 
     private void Border() //Keeping the Player inside the Border
     {
-        if (transform.position.x < -screensize.x)
+        if (transform.position.x < -screenSize.x)
         {
-            transform.position = new Vector2(-screensize.x, transform.position.y);
+            var transform1 = transform;
+            transform1.position = new Vector2(-screenSize.x, transform1.position.y);
         }
-        else if (transform.position.x > screensize.x)
+        else if (transform.position.x > screenSize.x)
         {
-            transform.position = new Vector2(screensize.x, transform.position.y);
+            var transform1 = transform;
+            transform1.position = new Vector2(screenSize.x, transform1.position.y);
         }
 
-        if (transform.position.y < -screensize.y)
+        if (transform.position.y < -screenSize.y)
         {
-            transform.position = new Vector2(transform.position.x, -screensize.y);
+            var transform1 = transform;
+            transform1.position = new Vector2(transform1.position.x, -screenSize.y);
         }
-        else if (transform.position.y > screensize.y)
+        else if (transform.position.y > screenSize.y)
         {
-            transform.position = new Vector2(transform.position.x, screensize.y);
+            var transform1 = transform;
+            transform1.position = new Vector2(transform1.position.x, screenSize.y);
         }
     }
 
