@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,6 +7,7 @@ public class GameManager : MonoBehaviour
     {
         this.explosionEffect.transform.position = asteroid.transform.position;
         this.explosionEffect.Play();
+        AchievementsManager.Instance.IncreaseKillCount();
     }
 
 }
