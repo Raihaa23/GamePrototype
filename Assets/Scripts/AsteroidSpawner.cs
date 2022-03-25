@@ -18,7 +18,7 @@ public class AsteroidSpawner : MonoBehaviour
 
     public void Spawn()
     {
-        for (int i = 0; i < this.amountPerSpawn; i++)
+        for (var i = 0; i < this.amountPerSpawn; i++)
         {
             Vector2 spawnDirection = Random.insideUnitCircle.normalized;
             Vector3 spawnPoint = spawnDirection * this.spawnDistance;

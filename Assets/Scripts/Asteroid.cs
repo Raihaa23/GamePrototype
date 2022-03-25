@@ -17,51 +17,49 @@ public class Asteroid : MonoBehaviour
 
     private void Awake()
     {
-        this.spriteRenderer = GetComponent<SpriteRenderer>();
-        this.rigidbody = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        rigidbody = GetComponent<Rigidbody2D>();
     }
 
     private void Start()
     {
-        this.spriteRenderer.sprite = this.sprites[Random.Range(2, this.sprites.Length)];
-        this.transform.eulerAngles = new Vector3(0.0f, 0.0f, Random.value * 360.0f);
+        spriteRenderer.sprite = sprites[Random.Range(2, sprites.Length)];
+        var transform1 = transform;
+        transform1.eulerAngles = new Vector3(0.0f, 0.0f, Random.value * 360.0f);
 
-        this.transform.localScale = Vector3.one * this.size;
-        this.rigidbody.mass = this.size;
+        transform1.localScale = Vector3.one * size;
+        rigidbody.mass = size;
 
-        Destroy(this.gameObject, this.maxLifetime);
+        Destroy(gameObject, maxLifetime);
     }
 
     public void SetTrajectory(Vector2 direction)
     {
-        this.rigidbody.AddForce(direction * this.movementSpeed);
+        rigidbody.AddForce(direction * movementSpeed);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Bullet")
+        if (!collision.gameObject.CompareTag("Bullet")) return;
+        if ((size * 0.5f) >= minSize)
         {
-            if ((this.size * 0.5f) >= this.minSize)
-            {
-                CreateSplit();
-                CreateSplit();
-            }
-
-            FindObjectOfType<GameManager>().AsteroidDestroyed(this);
-            Destroy(this.gameObject);
+            CreateSplit();
+            CreateSplit();
         }
+
+        FindObjectOfType<GameManager>().AsteroidDestroyed(this);
+        Destroy(gameObject);
     }
 
-    private Asteroid CreateSplit()
+    private void CreateSplit()
     {
-        Vector2 position = this.transform.position;
+        var transform1 = transform;
+        Vector2 position = transform1.position;
         position += Random.insideUnitCircle * 0.5f;
 
-        Asteroid half = Instantiate(this, position, this.transform.rotation);
-        half.size = this.size * 0.5f;
+        var half = Instantiate(this, position, transform1.rotation);
+        half.size = size * 0.5f;
         half.SetTrajectory(Random.insideUnitCircle.normalized);
-
-        return half;
     }
 
 }

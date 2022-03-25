@@ -19,7 +19,7 @@ public class Shooting : MonoBehaviour
         Destroy(this.gameObject, this.maxLifetime);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D()
     {
         Destroy(this.gameObject);
     }
